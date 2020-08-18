@@ -1,4 +1,4 @@
-# flutter_date_multiple_days
+# selecting_multiple_days_calendar
 
 A new Flutter application.
 
