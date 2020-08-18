@@ -7,18 +7,18 @@ class CalendarPage extends StatefulWidget {
 }
 
 class _CalendarPageState extends State<CalendarPage> {
+  final PageController pageController = PageController(initialPage: 12);
   List<DateTime> selectedDateList = [];
-  //選択さえた日付、動的に変化
-  //TODO:リスト化する
+  List<Widget> calendarList = [];
   DateTime now = DateTime.now();
-  //不要？カレンダーを開いた時にその月のかれんだーが開かれてればよい
-  //TODO:カレンダーを開いた時に当月となるための引数となる変数を用意
   int monthDuration = 0;
 
   final double itemHeight = 45.0;
 
   @override
   Widget build(BuildContext context) {
+    buildCalendarList(now);
+
     return Scaffold(
         appBar: AppBar(
           title: Text('Selecting multiple days'),
@@ -27,32 +27,24 @@ class _CalendarPageState extends State<CalendarPage> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: [
-              buildCalendar(),
-              SizedBox(
-                height: 50,
-              ),
-              FlatButton(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-                color: Theme.of(context).primaryColor,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 150),
-                  child: Text(
-                    '登録',
-                    style: TextStyle(fontSize: 22, color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                onPressed: () => Navigator.pushNamed(context, '/page_view'),
-              ),
-            ],
+          child: PageView(
+            onPageChanged: (pageId) {},
+            controller: pageController,
+            children: calendarList,
           ),
         ));
   }
 
-  Widget buildCalendar() {
+  void buildCalendarList(DateTime now) {
+    int numberOfMonth = 40;
+
+    for (int i = 0; i < numberOfMonth; i++) {
+      print(i);
+      calendarList.add(buildCalendar(DateTime(now.year, now.month + i - 12, 1), i));
+    }
+  }
+
+  Widget buildCalendar(DateTime month, int number) {
     List<Widget> _list = [];
 
     _list.add(
@@ -72,7 +64,7 @@ class _CalendarPageState extends State<CalendarPage> {
               },
             ),
             Text(
-              DateFormat('yyyy年M月').format(DateTime(now.year, now.month + monthDuration, 1)),
+              DateFormat('yyyy年M月').format(DateTime(now.year, now.month + number - 12, 1)),
               style: TextStyle(fontSize: 22.0),
             ),
             GestureDetector(
@@ -109,7 +101,7 @@ class _CalendarPageState extends State<CalendarPage> {
       ),
     );
 
-    DateTime _now = DateTime(now.year, now.month + monthDuration, 1);
+    DateTime _now = DateTime(month.year, month.month + monthDuration, 1);
     int monthLastNumber = DateTime(_now.year, _now.month + 1, 1).add(Duration(days: -1)).day;
     List<Widget> _listCache = [];
     for (int i = 1; i <= monthLastNumber; i++) {

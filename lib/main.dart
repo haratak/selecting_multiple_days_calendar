@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Selecting multiple days',
-      initialRoute: 'calendar',
+      initialRoute: '/calendar',
       routes: {'/calendar': (context) => CalendarPage(), '/page_view': (context) => PageViewSamplePage()},
       home: CalendarPage(),
     );

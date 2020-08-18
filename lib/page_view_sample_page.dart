@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-int _lowerCount = -1;
-int _upperCount = 1;
+int _lowerCount = -2;
+int _upperCount = 2;
 
 class PageViewSamplePage extends StatefulWidget {
   @override
@@ -11,9 +11,9 @@ class PageViewSamplePage extends StatefulWidget {
 }
 
 class PageViewSamplePageState extends State<PageViewSamplePage> {
-  final List<int> _pages = <int>[-1, 0, 1];
+  final List<int> _pages = <int>[-2, -1, 0, 1, 2];
 
-  final PageController pageController = PageController(initialPage: 1);
+  final PageController pageController = PageController(initialPage: 2, viewportFraction: 0.99);
 
   Widget _buildPages(page) {
     return Center(
@@ -46,15 +46,20 @@ class PageViewSamplePageState extends State<PageViewSamplePage> {
                 _pages.add(_upperCount);
               });
             }
-            if (pageId == 0) {
+            if (pageId == 1) {
               print("First page, add page to start");
               _lowerCount = _lowerCount - 1;
               setState(() {
-                _pages.insert(0, _lowerCount);
+                _pages.add(_lowerCount);
+                _pages.sort((a, b) {
+                  return a.compareTo(b);
+                });
               });
-              pageController.jumpToPage(1);
+//              pageController.jumpToPage(1);
+
             }
             print(_pages);
+            print(pageId.toString());
           },
           controller: pageController,
           children: List<Widget>.generate(_pages.length, (index) {
