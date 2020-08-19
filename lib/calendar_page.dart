@@ -95,8 +95,6 @@ class _CalendarPageState extends State<CalendarPage> {
                         pageNumber--;
                       });
                     }
-                    print('after:page番号は$pageId');
-                    print('after:page変数は$pageNumber');
                   },
                   controller: pageController,
                   children: calendarList,
@@ -178,52 +176,42 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   Widget buildCalendarItem(int i, DateTime selectedDate) {
-    if (selectedDateList.contains(selectedDate)) {
-      return InkWell(
-        child: CircleAvatar(
-          radius: 18,
-          backgroundColor: (selectedDateList.contains(selectedDate)) ? Colors.redAccent : Colors.transparent,
-          child: Container(
-            alignment: Alignment.center,
-            height: itemHeight,
-            child: Text(
-              '$i',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontSize: 20.0,
-                  color: (selectedDateList.contains(selectedDate)) ? Colors.white : Colors.black,
-                  fontWeight: FontWeight.bold),
-            ),
+    return InkWell(
+      child: CircleAvatar(
+        radius: 18,
+        backgroundColor: (selectedDateList.contains(selectedDate)) ? Colors.redAccent : Colors.transparent,
+        child: Container(
+          alignment: Alignment.center,
+          height: itemHeight,
+          child: Text(
+            '$i',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontSize: 20.0,
+                color: (selectedDateList.contains(selectedDate)) ? Colors.white : Colors.black,
+                fontWeight: selectedDateList.contains(selectedDate) ? FontWeight.bold : FontWeight.normal),
           ),
-        ),
-        onTap: () {
-          selectedDateList.remove(selectedDate);
-          setState(() {});
-        },
-      );
-    }
-
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      child: Container(
-        alignment: Alignment.center,
-        height: itemHeight,
-        child: Text(
-          '$i',
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 18.0),
         ),
       ),
       onTap: () {
-        selectedDateList.add(selectedDate);
-        setState(() {});
-        selectedDateList.sort((a, b) {
-          return a.compareTo(b);
-        });
-        for (var date in selectedDateList) {
-          print('${DateFormat('yyyy年M月d日').format(date)}が選択されました');
-        }
-        print(selectedDateList.length.toString());
+//        if (selectedDateList.contains(selectedDate)) {
+//          selectedDateList.remove(selectedDate);
+//          setState(() {});
+//          for (var date in selectedDateList) {
+//            print('${DateFormat('yyyy年M月d日').format(date)}が選択されました');
+//          }
+//          print(selectedDateList.length.toString());
+//        } else {
+//          selectedDateList.add(selectedDate);
+//          setState(() {});
+//          selectedDateList.sort((a, b) {
+//            return a.compareTo(b);
+//          });
+//          for (var date in selectedDateList) {
+//            print('${DateFormat('yyyy年M月d日').format(date)}が選択されました');
+//          }
+//          print(selectedDateList.length.toString());
+//        }
       },
     );
   }
