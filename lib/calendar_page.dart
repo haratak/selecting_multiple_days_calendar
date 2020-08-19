@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_date_multiple_days/date_state.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
+//todo 選択月のテキストとカレンダを分ける
+//todo 土日の曜日、日付テキストを赤に（必須ではない）
 
 class CalendarPage extends StatefulWidget {
   @override
@@ -11,7 +16,7 @@ class _CalendarPageState extends State<CalendarPage> {
   List<DateTime> selectedDateList = [];
   List<Widget> calendarList = [];
   DateTime now = DateTime.now();
-  int monthDuration = 0;
+  int pageNumber = 12;
 
   final double itemHeight = 45.0;
 
@@ -27,10 +32,77 @@ class _CalendarPageState extends State<CalendarPage> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: PageView(
-            onPageChanged: (pageId) {},
-            controller: pageController,
-            children: calendarList,
+          child: Column(
+            children: [
+              Container(
+                height: 100.0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    GestureDetector(
+                      child: Icon(
+                        Icons.arrow_left,
+                        size: 50.0,
+                      ),
+                      onTap: () {
+                        context.read<DateStateNotifier>().decrement();
+                        setState(() {
+                          pageNumber--;
+                        });
+                        pageController.animateToPage(pageNumber,
+                            duration: const Duration(milliseconds: 300), curve: Curves.ease);
+                        setState(() {});
+                      },
+                    ),
+                    Text(
+                      DateFormat('yyyy年M月').format(DateTime(now.year, now.month + context.watch<DateState>().count, 1)),
+                      style: TextStyle(fontSize: 22.0),
+                    ),
+                    GestureDetector(
+                      child: Icon(
+                        Icons.arrow_right,
+                        size: 50.0,
+                      ),
+                      onTap: () {
+                        context.read<DateStateNotifier>().increment();
+                        setState(() {
+                          pageNumber++;
+                        });
+                        pageController.animateToPage(pageNumber,
+                            duration: const Duration(milliseconds: 800), curve: Curves.ease);
+                        setState(() {});
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: PageView(
+                  onPageChanged: (pageId) {
+                    print('page 番号は$pageId');
+                    print('page変数は$pageNumber');
+                    if (pageNumber == pageId) {
+                      return;
+                    }
+                    if (pageNumber < pageId) {
+                      context.read<DateStateNotifier>().increment();
+                      setState(() {
+                        pageNumber++;
+                      });
+                    } else {
+                      context.read<DateStateNotifier>().decrement();
+                      setState(() {
+                        pageNumber--;
+                      });
+                    }
+                    print('after:page番号は$pageId');
+                    print('after:page変数は$pageNumber');
+                  },
+                  controller: pageController,
+                  children: calendarList,
+                ),
+              ),
+            ],
           ),
         ));
   }
@@ -39,48 +111,12 @@ class _CalendarPageState extends State<CalendarPage> {
     int numberOfMonth = 40;
 
     for (int i = 0; i < numberOfMonth; i++) {
-      print(i);
       calendarList.add(buildCalendar(DateTime(now.year, now.month + i - 12, 1), i));
     }
   }
 
   Widget buildCalendar(DateTime month, int number) {
     List<Widget> _list = [];
-
-    _list.add(
-      Container(
-        height: 100.0,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            GestureDetector(
-              child: Icon(
-                Icons.arrow_left,
-                size: 50.0,
-              ),
-              onTap: () {
-                monthDuration--;
-                setState(() {});
-              },
-            ),
-            Text(
-              DateFormat('yyyy年M月').format(DateTime(now.year, now.month + number - 12, 1)),
-              style: TextStyle(fontSize: 22.0),
-            ),
-            GestureDetector(
-              child: Icon(
-                Icons.arrow_right,
-                size: 50.0,
-              ),
-              onTap: () {
-                monthDuration++;
-                setState(() {});
-              },
-            ),
-          ],
-        ),
-      ),
-    );
 
     List<String> _dayOfTheWeek = ['日', '月', '火', '水', '木', '金', '土'];
     List<Widget> _weekList = [];
@@ -101,7 +137,7 @@ class _CalendarPageState extends State<CalendarPage> {
       ),
     );
 
-    DateTime _now = DateTime(month.year, month.month + monthDuration, 1);
+    DateTime _now = DateTime(month.year, month.month + context.watch<DateState>().count, 1);
     int monthLastNumber = DateTime(_now.year, _now.month + 1, 1).add(Duration(days: -1)).day;
     List<Widget> _listCache = [];
     for (int i = 1; i <= monthLastNumber; i++) {
