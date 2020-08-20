@@ -30,7 +30,6 @@ class _CalendarPageState extends State<CalendarPage> {
     super.initState();
     createMonths(DateTime(now.year, now.month, 1));
     createDayLabel(monthsList);
-//    buildCalendarList();
   }
 
   createMonths(DateTime startMonth) {
@@ -51,18 +50,12 @@ class _CalendarPageState extends State<CalendarPage> {
       List<DayLabel> dayLabelListTemp = [];
       for (var ii = 0; ii < monthsList[i].monthLastNumber; ii++) {
         DayLabel dayLabel =
-            DayLabel(DateTime(monthsList[i].month.year, monthsList[i].month.month, ii + 1), false, Colors.grey);
+            DayLabel(DateTime(monthsList[i].month.year, monthsList[i].month.month, ii + 1), false, Colors.white);
         dayLabelListTemp.add(dayLabel);
       }
       dayLabelList.add(dayLabelListTemp);
     }
   }
-
-//  buildCalendarList() {
-//    for (int i = 0; i < monthsList.length; i++) {
-//      calendarList.add(buildCalendar(monthsList[i], dayLabelList[i]));
-//    }
-//  }
 
   @override
   Widget build(BuildContext context) {
@@ -150,125 +143,80 @@ class _CalendarPageState extends State<CalendarPage> {
   List<Widget> _createPage(List<Month> monthsList) {
     List<Widget> pages = [];
     for (var i = 0; i < monthsList.length; i++) {
-      pages.add(
-        SingleChildScrollView(
-          child: Column(
-            children: [
-              FlatButton(
-                color: monthsList[i].isSelected ? Colors.blue : Colors.red,
-                child: Text('button'),
-                onPressed: () {
-                  setState(() {
-                    if (monthsList[i].isSelected) {
-                      monthsList[i].isSelected = false;
-                    } else {
-                      monthsList[i].isSelected = true;
-                    }
-                  });
-                  print('pushed');
-                  print('${monthsList[i].isSelected}');
-                },
-              ),
-//          Column(
-////            children: _list,
-////          ),
-              Wrap(
-                children: buildCalendar(monthsList[i], dayLabelList[i]),
-              ),
-            ],
-          ),
+      pages.add(SingleChildScrollView(
+        child: Column(
+          children: buildCalendar(monthsList[i], dayLabelList[i]),
         ),
-      );
+      ));
     }
     return pages;
   }
 
   List<Widget> buildCalendar(Month month, List<DayLabel> dayLabelList) {
     List<Widget> _list = [];
-    List<Widget> _listMain = [];
+    List<Widget> _widgetList = [];
 
-    for (var i = 0; i < dayLabelList.length; i++) {
-      _list.add(buildCalendarItem(dayLabelList[i]));
+    List<String> _dayOfTheWeek = ['日', '月', '火', '水', '木', '金', '土'];
+    List<Widget> _weekList = [];
+    for (int i = 0; i < 7; i++) {
+      _weekList.add(Expanded(
+        child: Container(
+          child: Text(
+            _dayOfTheWeek[i],
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 20.0),
+          ),
+        ),
+      ));
     }
-    return _list;
-//    return SingleChildScrollView(
-//      child: Column(
-//        children: [
-//          FlatButton(
-//            color: month.isSelected ? Colors.blue : Colors.red,
-//            child: Text('button'),
-//            onPressed: () {
-//              setState(() {
-//                if (month.isSelected) {
-//                  month.isSelected = false;
-//                } else {
-//                  month.isSelected = true;
-//                }
-//              });
-//              print('pushed');
-//              print('${month.isSelected}');
-//            },
-//          ),
-////          Column(
-//////            children: _list,
-//////          ),
-//          Wrap(
-//            children: _list,
-//          ),
-//        ],
-//      ),
-//    );
-//    List<Widget> _list = [];
-//
-//    List<String> _dayOfTheWeek = ['日', '月', '火', '水', '木', '金', '土'];
-//    List<Widget> _weekList = [];
-//    for (int i = 0; i < 7; i++) {
-//      _weekList.add(Expanded(
-//        child: Container(
-//          child: Text(
-//            _dayOfTheWeek[i],
-//            textAlign: TextAlign.center,
-//            style: TextStyle(fontSize: 20.0),
-//          ),
-//        ),
-//      ));
+    _list.add(
+      Row(
+        children: _weekList,
+      ),
+    );
+
+    List<Widget> _listCache = [];
+    for (int i = 0; i < month.monthLastNumber; i++) {
+      _listCache.add(Expanded(
+        child: buildCalendarItem(dayLabelList[i]),
+      ));
+      if (dayLabelList[i].day.weekday == 6 || i + 1 == month.monthLastNumber) {
+        int repeatNumber = 7 - _listCache.length;
+        for (int j = 0; j < repeatNumber; j++) {
+          if (dayLabelList[i].day.day <= 7) {
+            _listCache.insert(
+                0,
+                Expanded(
+                  child: Container(height: itemHeight),
+                ));
+          } else {
+            _listCache.add(Expanded(
+              child: Container(
+                height: itemHeight,
+              ),
+            ));
+          }
+        }
+
+        _list.add(Row(
+          children: _listCache,
+        ));
+        _listCache = [];
+      }
+    }
+
+//    for (var i = 0; i < dayLabelList.length; i++) {
+    _widgetList.add(SingleChildScrollView(
+      child: Column(
+        children: [
+          Column(
+            children: _list,
+          ),
+        ],
+      ),
+    ));
 //    }
-//    _list.add(
-//      Row(
-//        children: _weekList,
-//      ),
-//    );
-//
-//    List<Widget> _listCache = [];
-//    for (int i = 0; i < month.monthLastNumber; i++) {
-//      _listCache.add(Expanded(
-//        child: buildCalendarItem(dayLabelList[i]),
-//      ));
-////      print(dayLabelList[i].day.weekday == 6 || i == month.monthLastNumber);
-//      if (dayLabelList[i].day.weekday == 6 || i + 1 == month.monthLastNumber) {
-//        int repeatNumber = 7 - _listCache.length;
-//        for (int j = 0; j < repeatNumber; j++) {
-//          if (dayLabelList[i].day.day <= 7) {
-//            _listCache.insert(
-//                0,
-//                Expanded(
-//                  child: Container(height: itemHeight),
-//                ));
-//          } else {
-//            _listCache.add(Expanded(
-//              child: Container(
-//                height: itemHeight,
-//              ),
-//            ));
-//          }
-//        }
-//
-//        _list.add(Row(
-//          children: _listCache,
-//        ));
-//        _listCache = [];
-//      }
-//    }
+    return _widgetList;
   }
 
   Widget buildCalendarItem(DayLabel dayLabel) {
@@ -291,12 +239,9 @@ class _CalendarPageState extends State<CalendarPage> {
       ),
       onTap: () {
         setState(() {
-          print(dayLabel.isSelected);
-          print(dayLabel.labelColor);
-          print(dayLabel.day);
           if (dayLabel.isSelected) {
             dayLabel.isSelected = false;
-            dayLabel.labelColor = Colors.grey;
+            dayLabel.labelColor = Colors.white;
           } else {
             dayLabel.isSelected = true;
             dayLabel.labelColor = Colors.redAccent;
