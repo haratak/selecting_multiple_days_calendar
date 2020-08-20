@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_date_multiple_days/date_state.dart';
+import 'package:flutter_date_multiple_days/calendar/date_state.dart';
+import 'package:flutter_date_multiple_days/calendar/day_label_state.dart';
+import 'package:flutter_date_multiple_days/entity/day_label.dart';
+import 'package:flutter_date_multiple_days/entity/month.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -12,17 +15,51 @@ class CalendarPage extends StatefulWidget {
 }
 
 class _CalendarPageState extends State<CalendarPage> {
-  final PageController pageController = PageController(initialPage: 12);
+  final PageController pageController = PageController(initialPage: 0);
   List<DateTime> selectedDateList = [];
   List<Widget> calendarList = [];
+  List<Month> monthsList = [];
+  List<List<DayLabel>> dayLabelList = [];
   DateTime now = DateTime.now();
   int pageNumber = 12;
 
   final double itemHeight = 45.0;
 
   @override
+  void initState() {
+    super.initState();
+    createMonths(DateTime(now.year, now.month, 1));
+    createDayLabel(monthsList);
+  }
+
+  createMonths(DateTime startMonth) {
+    List<DateTime> monthsListTemp = [];
+    for (var i = 0; i < 10; i++) {
+      monthsListTemp.add(DateTime(now.year, now.month + i, 1));
+    }
+    for (var i = 0; i < 10; i++) {
+      var monthLastNumber =
+          DateTime(monthsListTemp[i].year, monthsListTemp[i].month + 1, 1).add(Duration(days: -1)).day;
+      Month month = Month(monthsListTemp[i], i + 1, monthLastNumber);
+      monthsList.add(month);
+    }
+  }
+
+  createDayLabel(List<Month> monthsList) {
+    for (var i = 0; i < monthsList.length; i++) {
+      List<DayLabel> dayLabelListTemp = [];
+      for (var ii = 0; ii < monthsList[i].monthLastNumber; ii++) {
+        DayLabel dayLabel =
+            DayLabel(DateTime(monthsList[i].month.year, monthsList[i].month.month, ii + 1), false, Colors.grey);
+        dayLabelListTemp.add(dayLabel);
+      }
+      dayLabelList.add(dayLabelListTemp);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    buildCalendarList(now);
+//    buildCalendarList(now);
 
     return Scaffold(
         appBar: AppBar(
@@ -97,7 +134,7 @@ class _CalendarPageState extends State<CalendarPage> {
                     }
                   },
                   controller: pageController,
-                  children: calendarList,
+                  children: buildCalendarList(),
                 ),
               ),
             ],
@@ -105,15 +142,14 @@ class _CalendarPageState extends State<CalendarPage> {
         ));
   }
 
-  void buildCalendarList(DateTime now) {
-    int numberOfMonth = 40;
-
-    for (int i = 0; i < numberOfMonth; i++) {
-      calendarList.add(buildCalendar(DateTime(now.year, now.month + i - 12, 1), i));
+  List<Widget> buildCalendarList() {
+    for (int i = 0; i < monthsList.length; i++) {
+      calendarList.add(buildCalendar(monthsList[i], dayLabelList[i]));
     }
+    return calendarList;
   }
 
-  Widget buildCalendar(DateTime month, int number) {
+  Widget buildCalendar(Month month, List<DayLabel> dayLabelList) {
     List<Widget> _list = [];
 
     List<String> _dayOfTheWeek = ['日', '月', '火', '水', '木', '金', '土'];
@@ -135,18 +171,16 @@ class _CalendarPageState extends State<CalendarPage> {
       ),
     );
 
-    DateTime _now = DateTime(month.year, month.month + context.watch<DateState>().count, 1);
-    int monthLastNumber = DateTime(_now.year, _now.month + 1, 1).add(Duration(days: -1)).day;
     List<Widget> _listCache = [];
-    for (int i = 1; i <= monthLastNumber; i++) {
+    for (int i = 0; i < month.monthLastNumber; i++) {
       _listCache.add(Expanded(
-        child: buildCalendarItem(i, DateTime(_now.year, _now.month, i)),
+        child: buildCalendarItem(dayLabelList[i]),
       ));
-
-      if (DateTime(_now.year, _now.month, i).weekday == 6 || i == monthLastNumber) {
+      print(dayLabelList[i].day.weekday == 6 || i == month.monthLastNumber);
+      if (dayLabelList[i].day.weekday == 6 || i + 1 == month.monthLastNumber) {
         int repeatNumber = 7 - _listCache.length;
         for (int j = 0; j < repeatNumber; j++) {
-          if (DateTime(_now.year, _now.month, i).day <= 7) {
+          if (dayLabelList[i].day.day <= 7) {
             _listCache.insert(
                 0,
                 Expanded(
@@ -175,43 +209,37 @@ class _CalendarPageState extends State<CalendarPage> {
     );
   }
 
-  Widget buildCalendarItem(int i, DateTime selectedDate) {
+  buildCalendarItem(DayLabel dayLabel) {
     return InkWell(
       child: CircleAvatar(
         radius: 18,
-        backgroundColor: (selectedDateList.contains(selectedDate)) ? Colors.redAccent : Colors.transparent,
+        backgroundColor: dayLabel.labelColor,
         child: Container(
           alignment: Alignment.center,
           height: itemHeight,
           child: Text(
-            '$i',
+            '${dayLabel.day.day}',
             textAlign: TextAlign.center,
             style: TextStyle(
                 fontSize: 20.0,
-                color: (selectedDateList.contains(selectedDate)) ? Colors.white : Colors.black,
-                fontWeight: selectedDateList.contains(selectedDate) ? FontWeight.bold : FontWeight.normal),
+//                color: dayLabel.labelColor,
+                fontWeight: dayLabel.isSelected ? FontWeight.bold : FontWeight.normal),
           ),
         ),
       ),
       onTap: () {
-//        if (selectedDateList.contains(selectedDate)) {
-//          selectedDateList.remove(selectedDate);
-//          setState(() {});
-//          for (var date in selectedDateList) {
-//            print('${DateFormat('yyyy年M月d日').format(date)}が選択されました');
-//          }
-//          print(selectedDateList.length.toString());
-//        } else {
-//          selectedDateList.add(selectedDate);
-//          setState(() {});
-//          selectedDateList.sort((a, b) {
-//            return a.compareTo(b);
-//          });
-//          for (var date in selectedDateList) {
-//            print('${DateFormat('yyyy年M月d日').format(date)}が選択されました');
-//          }
-//          print(selectedDateList.length.toString());
-//        }
+        setState(() {
+          print(dayLabel.isSelected);
+          print(dayLabel.labelColor);
+          print(dayLabel.day);
+          if (dayLabel.isSelected) {
+            dayLabel.isSelected = false;
+            dayLabel.labelColor = Colors.grey;
+          } else {
+            dayLabel.isSelected = true;
+            dayLabel.labelColor = Colors.redAccent;
+          }
+        });
       },
     );
   }
