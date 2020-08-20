@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_date_multiple_days/calendar/date_state.dart';
-import 'package:flutter_date_multiple_days/calendar/day_label_state.dart';
 import 'package:flutter_date_multiple_days/entity/day_label.dart';
 import 'package:flutter_date_multiple_days/entity/month.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
-//todo 選択月のテキストとカレンダを分ける
-//todo 土日の曜日、日付テキストを赤に（必須ではない）
 
 class CalendarPage extends StatefulWidget {
   @override
@@ -59,8 +55,6 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
-//    buildCalendarList(now);
-
     return Scaffold(
         appBar: AppBar(
           title: Text('Selecting multiple days'),
@@ -141,23 +135,25 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   List<Widget> _createPage(List<Month> monthsList) {
-    List<Widget> pages = [];
-    for (var i = 0; i < monthsList.length; i++) {
-      pages.add(SingleChildScrollView(
-        child: Column(
-          children: buildCalendar(monthsList[i], dayLabelList[i]),
+    final pages = <Widget>[];
+    monthsList.asMap().forEach((int index, Month month) {
+      pages.add(
+        SingleChildScrollView(
+          child: Column(
+            children: buildCalendar(month, dayLabelList[index]),
+          ),
         ),
-      ));
-    }
+      );
+    });
     return pages;
   }
 
   List<Widget> buildCalendar(Month month, List<DayLabel> dayLabelList) {
-    List<Widget> _list = [];
-    List<Widget> _widgetList = [];
+    final _list = <Widget>[];
+    final _widgetList = <Widget>[];
 
-    List<String> _dayOfTheWeek = ['日', '月', '火', '水', '木', '金', '土'];
-    List<Widget> _weekList = [];
+    final _dayOfTheWeek = <String>['日', '月', '火', '水', '木', '金', '土'];
+    final _weekList = <Widget>[];
     for (int i = 0; i < 7; i++) {
       _weekList.add(Expanded(
         child: Container(
@@ -176,6 +172,9 @@ class _CalendarPageState extends State<CalendarPage> {
     );
 
     List<Widget> _listCache = [];
+
+
+
     for (int i = 0; i < month.monthLastNumber; i++) {
       _listCache.add(Expanded(
         child: buildCalendarItem(dayLabelList[i]),
@@ -205,7 +204,6 @@ class _CalendarPageState extends State<CalendarPage> {
       }
     }
 
-//    for (var i = 0; i < dayLabelList.length; i++) {
     _widgetList.add(SingleChildScrollView(
       child: Column(
         children: [
@@ -215,7 +213,6 @@ class _CalendarPageState extends State<CalendarPage> {
         ],
       ),
     ));
-//    }
     return _widgetList;
   }
 
@@ -223,17 +220,14 @@ class _CalendarPageState extends State<CalendarPage> {
     return InkWell(
       child: CircleAvatar(
         radius: 18,
-        backgroundColor: dayLabel.labelColor,
+        backgroundColor: dayLabel.isSelected ? Colors.red : Colors.white,
         child: Container(
           alignment: Alignment.center,
           height: itemHeight,
           child: Text(
             '${dayLabel.day.day}',
             textAlign: TextAlign.center,
-            style: TextStyle(
-                fontSize: 20.0,
-//                color: dayLabel.labelColor,
-                fontWeight: dayLabel.isSelected ? FontWeight.bold : FontWeight.normal),
+            style: TextStyle(fontSize: 20.0, fontWeight: dayLabel.isSelected ? FontWeight.bold : FontWeight.normal),
           ),
         ),
       ),
@@ -241,10 +235,8 @@ class _CalendarPageState extends State<CalendarPage> {
         setState(() {
           if (dayLabel.isSelected) {
             dayLabel.isSelected = false;
-            dayLabel.labelColor = Colors.white;
           } else {
             dayLabel.isSelected = true;
-            dayLabel.labelColor = Colors.redAccent;
           }
         });
       },
