@@ -13,44 +13,34 @@ class CalendarPage extends StatefulWidget {
 class _CalendarPageState extends State<CalendarPage> {
   final PageController pageController = PageController(initialPage: 0);
   List<DateTime> selectedDateList = [];
-  List<Widget> calendarList = [];
   List<Month> monthsList = [];
   List<List<DayLabel>> dayLabelList = [];
   DateTime now = DateTime.now();
-  int pageNumber = 12;
+  int pageNumber = 0;
 
   final double itemHeight = 45.0;
 
   @override
   void initState() {
     super.initState();
-    createMonths(DateTime(now.year, now.month, 1));
-    createDayLabel(monthsList);
+    monthsList = createMonthList();
+    dayLabelList = createDayLabel(monthsList);
   }
 
-  createMonths(DateTime startMonth) {
-    List<DateTime> monthsListTemp = [];
-    for (var i = 0; i < 10; i++) {
-      monthsListTemp.add(DateTime(now.year, now.month + i, 1));
-    }
-    for (var i = 0; i < 10; i++) {
-      var monthLastNumber =
-          DateTime(monthsListTemp[i].year, monthsListTemp[i].month + 1, 1).add(Duration(days: -1)).day;
-      Month month = Month(monthsListTemp[i], i + 1, monthLastNumber, false);
-      monthsList.add(month);
-    }
+  List<Month> createMonthList() {
+    List<DateTime> dateList = List.generate(10, (i) => DateTime(DateTime.now().year, DateTime.now().month + i, 1));
+
+    return dateList.map((DateTime date) {
+      int monthLastNumber = DateTime(date.year, date.month + 1, 1).add(Duration(days: -1)).day;
+      return Month(date, monthLastNumber, false);
+    }).toList();
   }
 
-  createDayLabel(List<Month> monthsList) {
-    for (var i = 0; i < monthsList.length; i++) {
-      List<DayLabel> dayLabelListTemp = [];
-      for (var ii = 0; ii < monthsList[i].monthLastNumber; ii++) {
-        DayLabel dayLabel =
-            DayLabel(DateTime(monthsList[i].month.year, monthsList[i].month.month, ii + 1), false, Colors.white);
-        dayLabelListTemp.add(dayLabel);
-      }
-      dayLabelList.add(dayLabelListTemp);
-    }
+  List<List<DayLabel>> createDayLabel(List<Month> monthsList) {
+    return monthsList.map((Month month) {
+      return List.generate(
+          month.monthLastDay, (i) => DayLabel(DateTime(month.month.year, month.month.month, i + 1), false));
+    }).toList();
   }
 
   @override
@@ -151,20 +141,19 @@ class _CalendarPageState extends State<CalendarPage> {
   List<Widget> buildCalendar(Month month, List<DayLabel> dayLabelList) {
     final _list = <Widget>[];
     final _widgetList = <Widget>[];
-
     final _dayOfTheWeek = <String>['日', '月', '火', '水', '木', '金', '土'];
-    final _weekList = <Widget>[];
-    for (int i = 0; i < 7; i++) {
-      _weekList.add(Expanded(
-        child: Container(
-          child: Text(
-            _dayOfTheWeek[i],
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 20.0),
-          ),
-        ),
-      ));
-    }
+    List<Widget> _weekList = List.generate(
+        _dayOfTheWeek.length,
+        (i) => Expanded(
+              child: Container(
+                child: Text(
+                  _dayOfTheWeek[i],
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 20.0),
+                ),
+              ),
+            ));
+
     _list.add(
       Row(
         children: _weekList,
@@ -173,13 +162,11 @@ class _CalendarPageState extends State<CalendarPage> {
 
     List<Widget> _listCache = [];
 
-
-
-    for (int i = 0; i < month.monthLastNumber; i++) {
+    for (int i = 0; i < month.monthLastDay; i++) {
       _listCache.add(Expanded(
         child: buildCalendarItem(dayLabelList[i]),
       ));
-      if (dayLabelList[i].day.weekday == 6 || i + 1 == month.monthLastNumber) {
+      if (dayLabelList[i].day.weekday == 6 || i + 1 == month.monthLastDay) {
         int repeatNumber = 7 - _listCache.length;
         for (int j = 0; j < repeatNumber; j++) {
           if (dayLabelList[i].day.day <= 7) {
@@ -217,7 +204,7 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   Widget buildCalendarItem(DayLabel dayLabel) {
-    return InkWell(
+    return GestureDetector(
       child: CircleAvatar(
         radius: 18,
         backgroundColor: dayLabel.isSelected ? Colors.red : Colors.white,

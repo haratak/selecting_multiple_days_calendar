@@ -1,8 +1,7 @@
 class Month {
   DateTime month;
-  int numberOfPage;
-  int monthLastNumber;
+  int monthLastDay;
   bool isSelected;
 
-  Month(this.month, this.numberOfPage, this.monthLastNumber, this.isSelected);
+  Month(this.month, this.monthLastDay, this.isSelected);
 }
