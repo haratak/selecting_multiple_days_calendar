@@ -9,7 +9,7 @@ part 'date_state.g.dart';
 abstract class DateState with _$DateState {
   const factory DateState({
     @Default(0) int count,
-    @Default(13) int pageNumber,
+    @Default(0) int pageNumber,
   }) = _DateState;
   factory DateState.fromJson(Map<String, dynamic> json) => _$DateStateFromJson(json);
 }

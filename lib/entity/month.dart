@@ -3,5 +3,8 @@ class Month {
   int monthLastDay;
   bool isSelected;
 
-  Month(this.month, this.monthLastDay, this.isSelected);
+  Month(
+    this.month,
+    this.monthLastDay,
+  );
 }

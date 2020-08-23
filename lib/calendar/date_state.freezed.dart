@@ -16,7 +16,7 @@ class _$DateStateTearOff {
   const _$DateStateTearOff();
 
 // ignore: unused_element
-  _DateState call({int count = 0, int pageNumber = 13}) {
+  _DateState call({int count = 0, int pageNumber = 0}) {
     return _DateState(
       count: count,
       pageNumber: pageNumber,
@@ -90,7 +90,7 @@ class __$DateStateCopyWithImpl<$Res> extends _$DateStateCopyWithImpl<$Res>
 
 @JsonSerializable()
 class _$_DateState with DiagnosticableTreeMixin implements _DateState {
-  const _$_DateState({this.count = 0, this.pageNumber = 13})
+  const _$_DateState({this.count = 0, this.pageNumber = 0})
       : assert(count != null),
         assert(pageNumber != null);
 
@@ -100,7 +100,7 @@ class _$_DateState with DiagnosticableTreeMixin implements _DateState {
   @JsonKey(defaultValue: 0)
   @override
   final int count;
-  @JsonKey(defaultValue: 13)
+  @JsonKey(defaultValue: 0)
   @override
   final int pageNumber;
 

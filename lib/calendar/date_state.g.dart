@@ -9,7 +9,7 @@ part of 'date_state.dart';
 _$_DateState _$_$_DateStateFromJson(Map<String, dynamic> json) {
   return _$_DateState(
     count: json['count'] as int ?? 0,
-    pageNumber: json['pageNumber'] as int ?? 13,
+    pageNumber: json['pageNumber'] as int ?? 0,
   );
 }
 

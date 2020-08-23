@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_date_multiple_days/calendar/date_state.dart';
-import 'package:flutter_date_multiple_days/calendar/day_label_state.dart';
+import 'package:flutter_date_multiple_days/calendar/day_labels_state.dart';
+import 'package:flutter_date_multiple_days/entity/day_label_list.dart';
 import 'package:flutter_date_multiple_days/page_view_sample_page.dart';
 import 'package:flutter_state_notifier/flutter_state_notifier.dart';
 import 'package:provider/provider.dart';
@@ -11,8 +12,8 @@ void main() {
     StateNotifierProvider<DateStateNotifier, DateState>(
       create: (_) => DateStateNotifier(),
     ),
-    StateNotifierProvider<DayLabelStateNotifier, DayLabelState>(
-      create: (_) => DayLabelStateNotifier(),
+    StateNotifierProvider<DayLabelsController, DayLabelsState>(
+      create: (_) => DayLabelsController(),
     )
   ], child: MyApp()));
 }
