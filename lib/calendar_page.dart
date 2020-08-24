@@ -16,76 +16,57 @@ class CalendarPage extends StatefulWidget {
 class _CalendarPageState extends State<CalendarPage> {
   final PageController pageController = PageController(initialPage: 0);
   List<DateTime> selectedDateList = [];
-  List<Month> monthsList = [];
-//  List<List<DayLabel>> dayLabelList = [];
   int pageNumber = 0;
   DateTime now = DateTime.now();
 
   final double itemHeight = 45.0;
 
   @override
-  void initState() {
-    monthsList = createMonthList();
-//    dayLabelList = createDayLabel(monthsList);
-//    context.read<DayLabelListState>().createDayLabel(monthsList[1]);
-    super.initState();
-  }
-
-  List<Month> createMonthList() {
-    List<DateTime> dateList = List.generate(10, (i) => DateTime(DateTime.now().year, DateTime.now().month + i, 1));
-
-    return dateList.map((DateTime date) {
-      int monthLastNumber = DateTime(date.year, date.month + 1, 1).add(Duration(days: -1)).day;
-      return Month(date, monthLastNumber);
-    }).toList();
-  }
-
-  List<List<DayLabel>> createDayLabel(List<Month> monthsList) {
-    return monthsList.map((Month month) {
-      return List.generate(month.monthLastDay,
-          (i) => DayLabel(day: DateTime(month.month.year, month.month.month, i + 1), isSelected: false));
-    }).toList();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final dayLabels = context.select<DayLabelsState, List<DayLabel>>((state) => state.dayLabels);
-    print(dayLabels);
+    final lists = context.select<DayLabelsState, List<List<DayLabel>>>((state) => state.dayLabelLists);
+//    final dayLabels = context.select<DayLabelsState, List<DayLabel>>((state) => state.dayLabels);
+//    print(dayLabels);
     return Scaffold(
       appBar: AppBar(
         title: Text('Calendar Widget'),
         backgroundColor: Colors.grey,
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: ListView.builder(
-          itemCount: dayLabels.length,
-          itemBuilder: (_, index) {
-            final dayLabel = dayLabels[index];
-            return GestureDetector(
-                child: Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: CircleAvatar(
-                    radius: 30,
-                    backgroundColor: dayLabel.isSelected ? Colors.redAccent : Colors.white60,
-                    child: Container(
-                      alignment: Alignment.center,
-                      height: 45,
-                      child: Text(
-                        dayLabel.day.day.toString(),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: dayLabel.isSelected ? FontWeight.bold : FontWeight.normal,
-                            color: Colors.black),
+      body: ListView.builder(
+        itemCount: lists.length,
+        itemBuilder: (_, index) {
+          final list = lists[index];
+          return Container(
+            padding: EdgeInsets.symmetric(horizontal: 50),
+            height: 200,
+            child: ListView.builder(
+                itemCount: list.length,
+                itemBuilder: (_, index) {
+                  final dayLabel = list[index];
+                  return GestureDetector(
+                      child: Padding(
+                        padding: const EdgeInsets.all(3.0),
+                        child: CircleAvatar(
+                          radius: 30,
+                          backgroundColor: dayLabel.isSelected ? Colors.redAccent : Colors.white60,
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: 45,
+                            child: Text(
+                              dayLabel.day.day.toString(),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 20.0,
+                                  fontWeight: dayLabel.isSelected ? FontWeight.bold : FontWeight.normal,
+                                  color: Colors.black),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-                onTap: () => context.read<DayLabelsController>().changeBool(dayLabel));
-          },
-        ),
+                      onTap: () => context.read<DayLabelsController>().changeBool(dayLabel));
+                }),
+          );
+        },
       ),
 
 //          Column(

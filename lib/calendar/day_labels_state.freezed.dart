@@ -13,9 +13,10 @@ class _$DayLabelsStateTearOff {
   const _$DayLabelsStateTearOff();
 
 // ignore: unused_element
-  DayLabelsStateData call({List<DayLabel> dayLabels = const <DayLabel>[]}) {
+  DayLabelsStateData call(
+      {List<List<DayLabel>> dayLabelLists = const <List<DayLabel>>[]}) {
     return DayLabelsStateData(
-      dayLabels: dayLabels,
+      dayLabelLists: dayLabelLists,
     );
   }
 }
@@ -24,7 +25,7 @@ class _$DayLabelsStateTearOff {
 const $DayLabelsState = _$DayLabelsStateTearOff();
 
 mixin _$DayLabelsState {
-  List<DayLabel> get dayLabels;
+  List<List<DayLabel>> get dayLabelLists;
 
   $DayLabelsStateCopyWith<DayLabelsState> get copyWith;
 }
@@ -33,7 +34,7 @@ abstract class $DayLabelsStateCopyWith<$Res> {
   factory $DayLabelsStateCopyWith(
           DayLabelsState value, $Res Function(DayLabelsState) then) =
       _$DayLabelsStateCopyWithImpl<$Res>;
-  $Res call({List<DayLabel> dayLabels});
+  $Res call({List<List<DayLabel>> dayLabelLists});
 }
 
 class _$DayLabelsStateCopyWithImpl<$Res>
@@ -46,11 +47,12 @@ class _$DayLabelsStateCopyWithImpl<$Res>
 
   @override
   $Res call({
-    Object dayLabels = freezed,
+    Object dayLabelLists = freezed,
   }) {
     return _then(_value.copyWith(
-      dayLabels:
-          dayLabels == freezed ? _value.dayLabels : dayLabels as List<DayLabel>,
+      dayLabelLists: dayLabelLists == freezed
+          ? _value.dayLabelLists
+          : dayLabelLists as List<List<DayLabel>>,
     ));
   }
 }
@@ -61,7 +63,7 @@ abstract class $DayLabelsStateDataCopyWith<$Res>
           DayLabelsStateData value, $Res Function(DayLabelsStateData) then) =
       _$DayLabelsStateDataCopyWithImpl<$Res>;
   @override
-  $Res call({List<DayLabel> dayLabels});
+  $Res call({List<List<DayLabel>> dayLabelLists});
 }
 
 class _$DayLabelsStateDataCopyWithImpl<$Res>
@@ -76,11 +78,12 @@ class _$DayLabelsStateDataCopyWithImpl<$Res>
 
   @override
   $Res call({
-    Object dayLabels = freezed,
+    Object dayLabelLists = freezed,
   }) {
     return _then(DayLabelsStateData(
-      dayLabels:
-          dayLabels == freezed ? _value.dayLabels : dayLabels as List<DayLabel>,
+      dayLabelLists: dayLabelLists == freezed
+          ? _value.dayLabelLists
+          : dayLabelLists as List<List<DayLabel>>,
     ));
   }
 }
@@ -88,16 +91,16 @@ class _$DayLabelsStateDataCopyWithImpl<$Res>
 class _$DayLabelsStateData
     with DiagnosticableTreeMixin
     implements DayLabelsStateData {
-  const _$DayLabelsStateData({this.dayLabels = const <DayLabel>[]})
-      : assert(dayLabels != null);
+  const _$DayLabelsStateData({this.dayLabelLists = const <List<DayLabel>>[]})
+      : assert(dayLabelLists != null);
 
-  @JsonKey(defaultValue: const <DayLabel>[])
+  @JsonKey(defaultValue: const <List<DayLabel>>[])
   @override
-  final List<DayLabel> dayLabels;
+  final List<List<DayLabel>> dayLabelLists;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'DayLabelsState(dayLabels: $dayLabels)';
+    return 'DayLabelsState(dayLabelLists: $dayLabelLists)';
   }
 
   @override
@@ -105,21 +108,21 @@ class _$DayLabelsStateData
     super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('type', 'DayLabelsState'))
-      ..add(DiagnosticsProperty('dayLabels', dayLabels));
+      ..add(DiagnosticsProperty('dayLabelLists', dayLabelLists));
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other is DayLabelsStateData &&
-            (identical(other.dayLabels, dayLabels) ||
+            (identical(other.dayLabelLists, dayLabelLists) ||
                 const DeepCollectionEquality()
-                    .equals(other.dayLabels, dayLabels)));
+                    .equals(other.dayLabelLists, dayLabelLists)));
   }
 
   @override
   int get hashCode =>
-      runtimeType.hashCode ^ const DeepCollectionEquality().hash(dayLabels);
+      runtimeType.hashCode ^ const DeepCollectionEquality().hash(dayLabelLists);
 
   @override
   $DayLabelsStateDataCopyWith<DayLabelsStateData> get copyWith =>
@@ -127,11 +130,11 @@ class _$DayLabelsStateData
 }
 
 abstract class DayLabelsStateData implements DayLabelsState {
-  const factory DayLabelsStateData({List<DayLabel> dayLabels}) =
+  const factory DayLabelsStateData({List<List<DayLabel>> dayLabelLists}) =
       _$DayLabelsStateData;
 
   @override
-  List<DayLabel> get dayLabels;
+  List<List<DayLabel>> get dayLabelLists;
   @override
   $DayLabelsStateDataCopyWith<DayLabelsStateData> get copyWith;
 }
