@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_date_multiple_days/calendar/day_labels_state.dart';
 import 'package:flutter_date_multiple_days/entity/day_label.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class CalendarPage extends StatefulWidget {
   @override
@@ -11,13 +12,12 @@ class CalendarPage extends StatefulWidget {
 class _CalendarPageState extends State<CalendarPage> {
   final PageController pageController = PageController(initialPage: 0);
   List<DateTime> selectedDateList = [];
-  int pageNumber = 0;
+  DateTime now = DateTime.now();
 
   final double itemHeight = 45.0;
 
   @override
   Widget build(BuildContext context) {
-    final lists = context.select<DayLabelsState, List<List<DayLabel>>>((state) => state.dayLabelLists);
     return Scaffold(
       appBar: AppBar(
         title: Text('Calendar Widget'),
@@ -40,8 +40,8 @@ class _CalendarPageState extends State<CalendarPage> {
                     onTap: () =>
                         pageController.previousPage(duration: const Duration(milliseconds: 300), curve: Curves.ease)),
                 Text(
-                  'date',
-//                      DateFormat('yyyy年M月').format(DateTime(now.year, now.month + context.watch<DateState>().count, 1)),
+                  DateFormat('yyyy年M月').format(DateTime(
+                      now.year, now.month + context.select<DayLabelsState, int>((state) => state.monthNumber), 1)),
                   style: TextStyle(fontSize: 22.0),
                 ),
                 InkWell(
@@ -58,15 +58,7 @@ class _CalendarPageState extends State<CalendarPage> {
           Expanded(
             child: PageView(
               onPageChanged: (pageId) {
-//                    print(pageId);
-//                    print(pageNumber);
-//                    if (pageNumber < pageId) {
-//                      pageNumber++;
-//                      context.read<DateStateNotifier>().increment();
-//                    } else {
-//                      pageNumber--;
-//                      context.read<DateStateNotifier>().decrement();
-//                    }
+                context.read<DayLabelsController>().changeMonthNumber(pageId);
               },
               controller: pageController,
               children: _createMonthPage(),
@@ -88,7 +80,7 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   List<Widget> buildCalendar(List<DayLabel> dayLabelList) {
-    final lastDayInMonth = dayLabelList.last.day.day;
+    final lastDayInMonth = dayLabelList.last.date.day;
     final _list = <Widget>[];
     final _widgetList = <Widget>[];
     final _dayOfTheWeek = <String>['日', '月', '火', '水', '木', '金', '土'];
@@ -116,10 +108,10 @@ class _CalendarPageState extends State<CalendarPage> {
       _listCache.add(Expanded(
         child: buildCalendarItem(dayLabelList[i]),
       ));
-      if (dayLabelList[i].day.weekday == 6 || i + 1 == lastDayInMonth) {
+      if (dayLabelList[i].date.weekday == 6 || i + 1 == lastDayInMonth) {
         int repeatNumber = 7 - _listCache.length;
         for (int j = 0; j < repeatNumber; j++) {
-          if (dayLabelList[i].day.day <= 7) {
+          if (dayLabelList[i].date.day <= 7) {
             _listCache.insert(
                 0,
                 Expanded(
@@ -164,7 +156,7 @@ class _CalendarPageState extends State<CalendarPage> {
               alignment: Alignment.center,
               height: itemHeight,
               child: Text(
-                '${dayLabel.day.day}',
+                '${dayLabel.date.day}',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 20.0,

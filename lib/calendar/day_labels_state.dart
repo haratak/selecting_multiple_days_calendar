@@ -11,6 +11,7 @@ part 'day_labels_state.freezed.dart';
 abstract class DayLabelsState with _$DayLabelsState {
   const factory DayLabelsState({
     @Default(<List<DayLabel>>[]) List<List<DayLabel>> dayLabelLists,
+    @Default(0) int monthNumber,
   }) = DayLabelsStateData;
 }
 
@@ -27,14 +28,9 @@ class DayLabelsController extends StateNotifier<DayLabelsState> with LocatorMixi
 
     List<List<DayLabel>> list = monthList.map((Month month) {
       return List.generate(month.monthLastDay,
-          (i) => DayLabel(day: DateTime(month.month.year, month.month.month, i + 1), isSelected: false));
+          (i) => DayLabel(date: DateTime(month.month.year, month.month.month, i + 1), isSelected: false));
     }).toList();
     state = DayLabelsState(dayLabelLists: list);
-  }
-
-  @override
-  void update(Locator watch) {
-    super.update(watch);
   }
 
   void changeBool(DayLabel inputDayLabel) {
@@ -54,7 +50,8 @@ class DayLabelsController extends StateNotifier<DayLabelsState> with LocatorMixi
       state = DayLabelsState(
         dayLabelLists: dayLabelLists,
       );
-      print(inputDayLabel);
     }
   }
+
+  void changeMonthNumber(int pageNumber) => state = state.copyWith(monthNumber: pageNumber);
 }

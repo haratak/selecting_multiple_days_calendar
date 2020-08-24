@@ -13,9 +13,9 @@ class _$DayLabelTearOff {
   const _$DayLabelTearOff();
 
 // ignore: unused_element
-  DayLabelData call({DateTime day, bool isSelected = false}) {
+  DayLabelData call({DateTime date, bool isSelected = false}) {
     return DayLabelData(
-      day: day,
+      date: date,
       isSelected: isSelected,
     );
   }
@@ -25,7 +25,7 @@ class _$DayLabelTearOff {
 const $DayLabel = _$DayLabelTearOff();
 
 mixin _$DayLabel {
-  DateTime get day;
+  DateTime get date;
   bool get isSelected;
 
   $DayLabelCopyWith<DayLabel> get copyWith;
@@ -34,7 +34,7 @@ mixin _$DayLabel {
 abstract class $DayLabelCopyWith<$Res> {
   factory $DayLabelCopyWith(DayLabel value, $Res Function(DayLabel) then) =
       _$DayLabelCopyWithImpl<$Res>;
-  $Res call({DateTime day, bool isSelected});
+  $Res call({DateTime date, bool isSelected});
 }
 
 class _$DayLabelCopyWithImpl<$Res> implements $DayLabelCopyWith<$Res> {
@@ -46,11 +46,11 @@ class _$DayLabelCopyWithImpl<$Res> implements $DayLabelCopyWith<$Res> {
 
   @override
   $Res call({
-    Object day = freezed,
+    Object date = freezed,
     Object isSelected = freezed,
   }) {
     return _then(_value.copyWith(
-      day: day == freezed ? _value.day : day as DateTime,
+      date: date == freezed ? _value.date : date as DateTime,
       isSelected:
           isSelected == freezed ? _value.isSelected : isSelected as bool,
     ));
@@ -62,7 +62,7 @@ abstract class $DayLabelDataCopyWith<$Res> implements $DayLabelCopyWith<$Res> {
           DayLabelData value, $Res Function(DayLabelData) then) =
       _$DayLabelDataCopyWithImpl<$Res>;
   @override
-  $Res call({DateTime day, bool isSelected});
+  $Res call({DateTime date, bool isSelected});
 }
 
 class _$DayLabelDataCopyWithImpl<$Res> extends _$DayLabelCopyWithImpl<$Res>
@@ -76,11 +76,11 @@ class _$DayLabelDataCopyWithImpl<$Res> extends _$DayLabelCopyWithImpl<$Res>
 
   @override
   $Res call({
-    Object day = freezed,
+    Object date = freezed,
     Object isSelected = freezed,
   }) {
     return _then(DayLabelData(
-      day: day == freezed ? _value.day : day as DateTime,
+      date: date == freezed ? _value.date : date as DateTime,
       isSelected:
           isSelected == freezed ? _value.isSelected : isSelected as bool,
     ));
@@ -88,18 +88,18 @@ class _$DayLabelDataCopyWithImpl<$Res> extends _$DayLabelCopyWithImpl<$Res>
 }
 
 class _$DayLabelData with DiagnosticableTreeMixin implements DayLabelData {
-  const _$DayLabelData({this.day, this.isSelected = false})
+  const _$DayLabelData({this.date, this.isSelected = false})
       : assert(isSelected != null);
 
   @override
-  final DateTime day;
+  final DateTime date;
   @JsonKey(defaultValue: false)
   @override
   final bool isSelected;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'DayLabel(day: $day, isSelected: $isSelected)';
+    return 'DayLabel(date: $date, isSelected: $isSelected)';
   }
 
   @override
@@ -107,7 +107,7 @@ class _$DayLabelData with DiagnosticableTreeMixin implements DayLabelData {
     super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('type', 'DayLabel'))
-      ..add(DiagnosticsProperty('day', day))
+      ..add(DiagnosticsProperty('date', date))
       ..add(DiagnosticsProperty('isSelected', isSelected));
   }
 
@@ -115,8 +115,8 @@ class _$DayLabelData with DiagnosticableTreeMixin implements DayLabelData {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other is DayLabelData &&
-            (identical(other.day, day) ||
-                const DeepCollectionEquality().equals(other.day, day)) &&
+            (identical(other.date, date) ||
+                const DeepCollectionEquality().equals(other.date, date)) &&
             (identical(other.isSelected, isSelected) ||
                 const DeepCollectionEquality()
                     .equals(other.isSelected, isSelected)));
@@ -125,7 +125,7 @@ class _$DayLabelData with DiagnosticableTreeMixin implements DayLabelData {
   @override
   int get hashCode =>
       runtimeType.hashCode ^
-      const DeepCollectionEquality().hash(day) ^
+      const DeepCollectionEquality().hash(date) ^
       const DeepCollectionEquality().hash(isSelected);
 
   @override
@@ -134,10 +134,10 @@ class _$DayLabelData with DiagnosticableTreeMixin implements DayLabelData {
 }
 
 abstract class DayLabelData implements DayLabel {
-  const factory DayLabelData({DateTime day, bool isSelected}) = _$DayLabelData;
+  const factory DayLabelData({DateTime date, bool isSelected}) = _$DayLabelData;
 
   @override
-  DateTime get day;
+  DateTime get date;
   @override
   bool get isSelected;
   @override
